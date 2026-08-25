@@ -76,7 +76,7 @@ final class WheelMeshEmitter {
                 if (block.isRemoveIfCave() && visibleLight == 0) {
                     continue;
                 }
-                emitQuad(quad, facing, target, material, light);
+                emitQuad(quad, facing, target, material, light, pose);
                 if (pose == 0 && normal.y() > 0D) {
                     Color average = new Color().set(texture.getColorPremultiplied());
                     float lightFactor = Math.max(
@@ -104,7 +104,8 @@ final class WheelMeshEmitter {
             String facing,
             TileModelView target,
             int material,
-            FaceLighting.Sample light
+            FaceLighting.Sample light,
+            int pose
     ) {
         Vertex first = transform(quad.first(), facing);
         Vertex second = transform(quad.second(), facing);
@@ -114,8 +115,8 @@ final class WheelMeshEmitter {
         TileModel mesh = target.getTileModel();
         positions(mesh, start, first, second, third);
         positions(mesh, start + 1, first, third, fourth);
-        uvs(mesh, start, first, second, third);
-        uvs(mesh, start + 1, first, third, fourth);
+        uvs(mesh, start, first, second, third, pose);
+        uvs(mesh, start + 1, first, third, fourth, pose);
         for (int index = start; index < start + 2; index++) {
             mesh.setMaterialIndex(index, material);
             mesh.setColor(index, 1F, 1F, 1F);
@@ -185,13 +186,18 @@ final class WheelMeshEmitter {
             int index,
             Vertex first,
             Vertex second,
-            Vertex third
+            Vertex third,
+            int pose
     ) {
         mesh.setUvs(
                 index,
-                first.u(), first.v(),
-                second.u(), second.v(),
-                third.u(), third.v()
+                first.u(), poseV(first.v(), pose),
+                second.u(), poseV(second.v(), pose),
+                third.u(), poseV(third.v(), pose)
         );
+    }
+
+    static float poseV(float v, int pose) {
+        return v + pose;
     }
 }

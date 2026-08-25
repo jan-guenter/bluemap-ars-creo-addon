@@ -37,6 +37,14 @@ class WheelMeshEmitterTest {
         );
     }
 
+    @Test
+    void offsetsEachPoseIntoItsAtlasSlot() {
+        assertEquals(0.25F, WheelMeshEmitter.poseV(0.25F, 0));
+        assertEquals(1.25F, WheelMeshEmitter.poseV(0.25F, 1));
+        assertEquals(2.25F, WheelMeshEmitter.poseV(0.25F, 2));
+        assertEquals(3.25F, WheelMeshEmitter.poseV(0.25F, 3));
+    }
+
     private static void assertVector(Vec3 actual, double x, double y, double z) {
         assertEquals(x, actual.x(), DELTA);
         assertEquals(y, actual.y(), DELTA);

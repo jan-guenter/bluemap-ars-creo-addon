@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 class AnimatedMaskTexturesTest {
 
     @Test
-    void createsFourSynchronizedOnePoseTextureStrips() throws IOException {
+    void createsOneClockedFourPoseTextureAtlas() throws IOException {
         BufferedImage sourceImage = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
         sourceImage.setRGB(0, 0, 0xffff0000);
         sourceImage.setRGB(1, 0, 0xff00ff00);
@@ -28,29 +28,31 @@ class AnimatedMaskTexturesTest {
 
         List<Texture> generated = AnimatedMaskTextures.create(source);
 
-        assertEquals(InstalledRunAnimationCompiler.POSE_COUNT, generated.size());
-        for (int pose = 0; pose < generated.size(); pose++) {
-            Texture texture = generated.get(pose);
-            BufferedImage strip = texture.getTextureImage();
-            assertEquals(2, strip.getWidth());
-            assertEquals(8, strip.getHeight());
-            for (int frame = 0; frame < InstalledRunAnimationCompiler.POSE_COUNT;
-                    frame++) {
+        assertEquals(1, generated.size());
+        Texture texture = generated.getFirst();
+        BufferedImage strip = texture.getTextureImage();
+        assertEquals(2, strip.getWidth());
+        assertEquals(32, strip.getHeight());
+        for (int frame = 0; frame < InstalledRunAnimationCompiler.POSE_COUNT;
+                frame++) {
+            for (int pose = 0; pose < InstalledRunAnimationCompiler.POSE_COUNT;
+                    pose++) {
                 for (int y = 0; y < 2; y++) {
                     for (int x = 0; x < 2; x++) {
                         int expected = frame == pose ? sourceImage.getRGB(x, y) : 0;
-                        assertEquals(expected, strip.getRGB(x, frame * 2 + y));
+                        int slot = frame * InstalledRunAnimationCompiler.POSE_COUNT + pose;
+                        assertEquals(expected, strip.getRGB(x, slot * 2 + y));
                     }
                 }
             }
-            assertNotNull(texture.getAnimation());
-            assertFalse(texture.getAnimation().isInterpolate());
-            assertEquals(3, texture.getAnimation().getFrametime());
-            assertEquals(List.of(0, 1, 2, 3), texture.getAnimation().getFrames()
-                    .stream().map(frame -> frame.getIndex()).toList());
-            assertEquals(List.of(3, 3, 3, 2), texture.getAnimation().getFrames()
-                    .stream().map(frame -> frame.getTime()).toList());
         }
+        assertNotNull(texture.getAnimation());
+        assertFalse(texture.getAnimation().isInterpolate());
+        assertEquals(3, texture.getAnimation().getFrametime());
+        assertEquals(List.of(0, 4, 8, 12), texture.getAnimation().getFrames()
+                .stream().map(frame -> frame.getIndex()).toList());
+        assertEquals(List.of(3, 3, 3, 2), texture.getAnimation().getFrames()
+                .stream().map(frame -> frame.getTime()).toList());
     }
 
     @Test

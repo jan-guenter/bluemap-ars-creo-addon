@@ -14,36 +14,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Creates four synchronized alpha masks backed by BlueMap texture animation. */
+/** Creates one clocked pose-atlas backed by BlueMap texture animation. */
 final class AnimatedMaskTextures {
 
     private static final int MAX_TEXTURE_EDGE = 512;
     private static final List<Integer> FRAME_TICKS = List.of(3, 3, 3, 2);
-    private static final List<Key> KEYS = List.of(
-            Key.parse("bluemap_ars_creo:block/starbuncle_wheel_run_pose_0"),
-            Key.parse("bluemap_ars_creo:block/starbuncle_wheel_run_pose_1"),
-            Key.parse("bluemap_ars_creo:block/starbuncle_wheel_run_pose_2"),
-            Key.parse("bluemap_ars_creo:block/starbuncle_wheel_run_pose_3")
+    private static final Key KEY = Key.parse(
+            "bluemap_ars_creo:block/starbuncle_wheel_run_poses"
     );
 
     private AnimatedMaskTextures() {
     }
 
     static List<Key> keys() {
-        return KEYS;
+        return List.of(KEY);
     }
 
     static List<Key> install(ResourcePack resourcePack, Texture source) throws IOException {
-        for (Key key : KEYS) {
-            if (resourcePack.getTextures().containsKey(key)) {
-                throw new IOException("animated wheel texture key collision");
-            }
+        if (resourcePack.getTextures().containsKey(KEY)) {
+            throw new IOException("animated wheel texture key collision");
         }
-        List<Texture> generated = create(source);
-        for (int index = 0; index < generated.size(); index++) {
-            resourcePack.getTextures().put(KEYS.get(index), generated.get(index));
-        }
-        return KEYS;
+        resourcePack.getTextures().put(KEY, create(source).getFirst());
+        return List.of(KEY, KEY, KEY, KEY);
     }
 
     static List<Texture> create(Texture source) throws IOException {
@@ -53,28 +45,30 @@ final class AnimatedMaskTextures {
             throw new IOException("installed wheel texture dimensions changed");
         }
         int frameSize = image.getWidth();
-        int stripHeight = Math.multiplyExact(
-                frameSize, InstalledRunAnimationCompiler.POSE_COUNT
-        );
+        int poseCount = InstalledRunAnimationCompiler.POSE_COUNT;
+        int stripHeight = Math.multiplyExact(frameSize, poseCount * poseCount);
         int[] pixels = image.getRGB(0, 0, frameSize, frameSize, null, 0, frameSize);
         AnimationMeta animation = animationMeta(frameSize);
-        List<Texture> generated = new ArrayList<>(
-                InstalledRunAnimationCompiler.POSE_COUNT
+        BufferedImage strip = new BufferedImage(
+                frameSize, stripHeight, BufferedImage.TYPE_INT_ARGB
         );
-        for (int pose = 0; pose < InstalledRunAnimationCompiler.POSE_COUNT; pose++) {
-            BufferedImage strip = new BufferedImage(
-                    frameSize, stripHeight, BufferedImage.TYPE_INT_ARGB
+        for (int frame = 0; frame < poseCount; frame++) {
+            int activeSlot = frame * poseCount + frame;
+            strip.setRGB(
+                    0, activeSlot * frameSize,
+                    frameSize, frameSize, pixels, 0, frameSize
             );
-            strip.setRGB(0, pose * frameSize, frameSize, frameSize, pixels, 0, frameSize);
-            generated.add(Texture.from(KEYS.get(pose), strip, animation));
         }
-        return List.copyOf(generated);
+        return List.of(Texture.from(KEY, strip, animation));
     }
 
     private static AnimationMeta animationMeta(int frameSize) {
         List<FrameMeta> frames = new ArrayList<>(FRAME_TICKS.size());
         for (int index = 0; index < FRAME_TICKS.size(); index++) {
-            frames.add(new FrameMeta(index, FRAME_TICKS.get(index)));
+            frames.add(new FrameMeta(
+                    index * InstalledRunAnimationCompiler.POSE_COUNT,
+                    FRAME_TICKS.get(index)
+            ));
         }
         return new AnimationMeta(
                 false, frameSize, frameSize, FRAME_TICKS.getFirst(), List.copyOf(frames)
