@@ -1,0 +1,69 @@
+{
+  "artifacts": [
+    {
+      "curseforge_file": 8139067,
+      "curseforge_project": 575698,
+      "download_url": "https://www.curseforge.com/api/v1/mods/575698/files/8139067/download",
+      "evidence": "All the Mons 1.2.0 manifest pins CurseForge 575698/8139067; the exact server-files member was independently filename-, size-, SHA-1-, SHA-256-, metadata-, and installed-resource-verified",
+      "evidence_tier": "T2_ARTIFACT_EXACT",
+      "file_name": "ars_creo-1.21.1-5.4.0.jar",
+      "key": "arsCreo",
+      "license": "LGPLv3 exact-JAR declaration; GPL-3.0-only distribution conflict",
+      "mod_id": "ars_creo",
+      "redistributed": false,
+      "sha1": "22a6afd4fbe76354acc9c1ba076c89a94d120d94",
+      "sha256": "50f0fe5c5f855151c1482c1772ea94c2eaadc2b0c85c963bb9aeb421fc801e4f",
+      "size": 95973,
+      "version": "5.4.0"
+    },
+    {
+      "curseforge_file": 8517890,
+      "curseforge_project": 401955,
+      "download_url": "https://www.curseforge.com/api/v1/mods/401955/files/8517890/download",
+      "evidence": "All the Mons 1.2.0 exact manifest association and independently hash-verified server runtime JAR; required host dependency",
+      "evidence_tier": "T2_ARTIFACT_EXACT",
+      "file_name": "ars_nouveau-1.21.1-5.13.0.jar",
+      "key": "arsNouveau",
+      "license": "GNU GENERAL PUBLIC LICENSE",
+      "mod_id": "ars_nouveau",
+      "redistributed": false,
+      "sha1": "b8d71856fd76d89573e6976f2461ea7385a3fff7",
+      "sha256": "90796df69bfb39b1a9c79edbfa01c2425e5b86aea47dc55ebdcbf30e88f47592",
+      "size": 20096005,
+      "version": "5.13.0"
+    },
+    {
+      "curseforge_file": 7963363,
+      "curseforge_project": 328085,
+      "download_url": "https://www.curseforge.com/api/v1/mods/328085/files/7963363/download",
+      "evidence": "All the Mons 1.2.0 exact manifest association and independently hash-verified server runtime JAR; required host dependency",
+      "evidence_tier": "T2_ARTIFACT_EXACT",
+      "file_name": "create-1.21.1-6.0.10.jar",
+      "key": "create",
+      "license": "MIT code; All Rights Reserved assets",
+      "mod_id": "create",
+      "redistributed": false,
+      "sha1": "0e97e49837bed766e6f28a4c95b04885d6acc353",
+      "sha256": "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a",
+      "size": 19123767,
+      "version": "6.0.10"
+    }
+  ],
+  "bluemap": {
+    "api_commit": "285c9a60eff3ac2b0cab308ce1058d1565be0971",
+    "commit": "9be321df995a1103808621d529eb72773e719d4d",
+    "license": "MIT",
+    "redistributed": false,
+    "version": "5.22-agent.backport-5.22-mc1.21.1-2"
+  },
+  "pack": {
+    "commit": "c7bb230f21d14d26859d0b92548f089b3a493ad9",
+    "minecraft": "1.21.1",
+    "name": "All the Mons",
+    "neoforge": "21.1.248",
+    "version": "1.2.0"
+  },
+  "profile": "ars-creo-5.4.0-mc1.21.1",
+  "schema": 1,
+  "source_use": "Runtime interfaces and installed resources may be interpreted only after family-specific evidence is recorded; no candidate classes, assets, binaries, source, or captured meshes are packaged."
+}

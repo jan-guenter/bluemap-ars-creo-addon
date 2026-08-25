@@ -1,0 +1,6 @@
+{
+  "id": "bluemap-ars-creo",
+  "entrypoint": "io.github.janguenter.bluemap.arscreo.BlueMapArsCreoAddon",
+  "dependencies": [],
+  "soft-dependencies": []
+}
