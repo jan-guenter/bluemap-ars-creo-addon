@@ -17,9 +17,10 @@ import io.github.janguenter.bluemap.arscreo.model.WheelModel.Quad;
 import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vec3;
 import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vertex;
 
+import java.util.List;
 import java.util.Set;
 
-/** Emits the installed wheel GEO in its deterministic unanimated base pose. */
+/** Emits a four-pose run flipbook or its deterministic static fallback. */
 final class WheelMeshEmitter {
 
     static final Key TEXTURE = Key.parse("ars_creo:block/starbuncle_wheel");
@@ -43,7 +44,7 @@ final class WheelMeshEmitter {
     }
 
     boolean emit(
-            WheelModel model,
+            RendererDataRegistry.Data data,
             String facing,
             BlockNeighborhood block,
             TileModelView target,
@@ -53,31 +54,42 @@ final class WheelMeshEmitter {
         if (texture == null || !FACINGS.contains(facing)) {
             return false;
         }
-        int material = textures.get(TEXTURE);
+        List<WheelModel> models = List.of(data.baseModel());
+        List<Key> materialKeys = List.of(TEXTURE);
+        if (data.animated() && data.runTextures().stream()
+                .allMatch(key -> resourcePack.getTextures().get(key) != null)) {
+            models = data.runPoses();
+            materialKeys = data.runTextures();
+        }
         float topOpacity = 0F;
-        for (Quad quad : model.quads()) {
-            Vec3 normal = transformNormal(quad.normal(), facing);
-            if (settings.isRenderTopOnly() && normal.y() <= 0D) {
-                continue;
-            }
-            Direction direction = nearestDirection(normal);
-            FaceLighting.Sample light = FaceLighting.sample(block, direction);
-            int visibleLight = settings.isCaveDetectionUsesBlockLight()
-                    ? Math.max(light.sunlight(), light.blocklight()) : light.sunlight();
-            if (block.isRemoveIfCave() && visibleLight == 0) {
-                continue;
-            }
-            emitQuad(quad, facing, target, material, light);
-            if (normal.y() > 0D) {
-                Color average = new Color().set(texture.getColorPremultiplied());
-                float lightFactor = Math.max(light.sunlight(), light.blocklight()) / 15F;
-                lightFactor = (1F - settings.getAmbientLight()) * lightFactor
-                        + settings.getAmbientLight();
-                average.r *= lightFactor;
-                average.g *= lightFactor;
-                average.b *= lightFactor;
-                topOpacity = Math.max(topOpacity, average.a);
-                mapColor.add(average);
+        for (int pose = 0; pose < models.size(); pose++) {
+            int material = textures.get(materialKeys.get(pose));
+            for (Quad quad : models.get(pose).quads()) {
+                Vec3 normal = transformNormal(quad.normal(), facing);
+                if (settings.isRenderTopOnly() && normal.y() <= 0D) {
+                    continue;
+                }
+                Direction direction = nearestDirection(normal);
+                FaceLighting.Sample light = FaceLighting.sample(block, direction);
+                int visibleLight = settings.isCaveDetectionUsesBlockLight()
+                        ? Math.max(light.sunlight(), light.blocklight()) : light.sunlight();
+                if (block.isRemoveIfCave() && visibleLight == 0) {
+                    continue;
+                }
+                emitQuad(quad, facing, target, material, light);
+                if (pose == 0 && normal.y() > 0D) {
+                    Color average = new Color().set(texture.getColorPremultiplied());
+                    float lightFactor = Math.max(
+                            light.sunlight(), light.blocklight()
+                    ) / 15F;
+                    lightFactor = (1F - settings.getAmbientLight()) * lightFactor
+                            + settings.getAmbientLight();
+                    average.r *= lightFactor;
+                    average.g *= lightFactor;
+                    average.b *= lightFactor;
+                    topOpacity = Math.max(topOpacity, average.a);
+                    mapColor.add(average);
+                }
             }
         }
         if (mapColor.a > 0F) {

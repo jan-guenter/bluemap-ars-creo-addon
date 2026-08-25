@@ -30,7 +30,7 @@ PLACEMENTS = (
         100,
         176,
         "ars_creo:starbuncle_wheel[facing=north]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "wheel-south",
@@ -39,7 +39,7 @@ PLACEMENTS = (
         100,
         176,
         "ars_creo:starbuncle_wheel[facing=south]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "wheel-west",
@@ -48,7 +48,7 @@ PLACEMENTS = (
         100,
         176,
         "ars_creo:starbuncle_wheel[facing=west]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "wheel-east",
@@ -57,7 +57,7 @@ PLACEMENTS = (
         100,
         176,
         "ars_creo:starbuncle_wheel[facing=east]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "wheel-up",
@@ -66,7 +66,7 @@ PLACEMENTS = (
         100,
         180,
         "ars_creo:starbuncle_wheel[facing=up]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "wheel-down",
@@ -75,7 +75,7 @@ PLACEMENTS = (
         100,
         180,
         "ars_creo:starbuncle_wheel[facing=down]",
-        "installed-base-pose-visible",
+        "installed-run-flipbook-visible",
     ),
     Placement(
         "stock-control",

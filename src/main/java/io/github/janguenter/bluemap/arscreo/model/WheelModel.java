@@ -4,7 +4,7 @@ package io.github.janguenter.bluemap.arscreo.model;
 
 import java.util.List;
 
-/** Immutable default-pose mesh compiled from the installed Ars Creo GEO. */
+/** Immutable base or sampled-pose mesh compiled from the installed Ars Creo GEO. */
 public record WheelModel(List<Quad> quads) {
 
     public WheelModel {

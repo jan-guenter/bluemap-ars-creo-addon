@@ -1,8 +1,8 @@
 case_id	label	x	y	z	block_state	expected
-wheel-north	Starbuncle Wheel facing north	176	100	176	ars_creo:starbuncle_wheel[facing=north]	installed-base-pose-visible
-wheel-south	Starbuncle Wheel facing south	180	100	176	ars_creo:starbuncle_wheel[facing=south]	installed-base-pose-visible
-wheel-west	Starbuncle Wheel facing west	184	100	176	ars_creo:starbuncle_wheel[facing=west]	installed-base-pose-visible
-wheel-east	Starbuncle Wheel facing east	188	100	176	ars_creo:starbuncle_wheel[facing=east]	installed-base-pose-visible
-wheel-up	Starbuncle Wheel facing up	176	100	180	ars_creo:starbuncle_wheel[facing=up]	installed-base-pose-visible
-wheel-down	Starbuncle Wheel facing down	180	100	180	ars_creo:starbuncle_wheel[facing=down]	installed-base-pose-visible
+wheel-north	Starbuncle Wheel facing north	176	100	176	ars_creo:starbuncle_wheel[facing=north]	installed-run-flipbook-visible
+wheel-south	Starbuncle Wheel facing south	180	100	176	ars_creo:starbuncle_wheel[facing=south]	installed-run-flipbook-visible
+wheel-west	Starbuncle Wheel facing west	184	100	176	ars_creo:starbuncle_wheel[facing=west]	installed-run-flipbook-visible
+wheel-east	Starbuncle Wheel facing east	188	100	176	ars_creo:starbuncle_wheel[facing=east]	installed-run-flipbook-visible
+wheel-up	Starbuncle Wheel facing up	176	100	180	ars_creo:starbuncle_wheel[facing=up]	installed-run-flipbook-visible
+wheel-down	Starbuncle Wheel facing down	180	100	180	ars_creo:starbuncle_wheel[facing=down]	installed-run-flipbook-visible
 stock-control	stone stock rendering control	184	100	180	minecraft:stone	stock-visible

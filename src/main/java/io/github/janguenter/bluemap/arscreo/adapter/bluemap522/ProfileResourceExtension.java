@@ -7,9 +7,12 @@ package io.github.janguenter.bluemap.arscreo.adapter.bluemap522;
 import de.bluecolored.bluemap.core.map.hires.block.BlockRendererType;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePack;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePackExtension;
+import de.bluecolored.bluemap.core.resources.pack.resourcepack.texture.Texture;
 import de.bluecolored.bluemap.core.util.Key;
 import io.github.janguenter.bluemap.arscreo.activation.AddonRuntime;
 import io.github.janguenter.bluemap.arscreo.model.InstalledGeoCompiler;
+import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler;
+import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler.RunAnimation;
 import io.github.janguenter.bluemap.arscreo.model.WheelModel;
 import io.github.janguenter.bluemap.arscreo.profile.ExactArtifactDetector;
 import io.github.janguenter.bluemap.arscreo.profile.ArsCreo540Profile;
@@ -18,22 +21,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/** Exact-artifact admission, installed GEO compilation, and target-only routing. */
+/** Exact admission, installed run-pose compilation, and target-only routing. */
 final class ProfileResourceExtension implements ResourcePackExtension {
 
     private static final int MAX_ROOTS = 4_096;
     private static final int MAX_GEO_BYTES = 64 * 1024;
+    private static final int MAX_ANIMATION_BYTES = 64 * 1024;
     private static final String GEO_PATH =
             "assets/ars_creo/geo/starbuncle_wheel.geo.json";
+    private static final String ANIMATION_PATH =
+            "assets/ars_creo/animations/starbuncle_wheel_animation.json";
     private final ResourcePack resourcePack;
     private final BlockRendererType renderer;
     private final AddonRuntime runtime;
-    private WheelModel model;
+    private WheelModel baseModel;
+    private List<WheelModel> runPoses = List.of();
+    private String animationFallback;
 
     ProfileResourceExtension(
             ResourcePack resourcePack,
@@ -47,6 +56,9 @@ final class ProfileResourceExtension implements ResourcePackExtension {
 
     @Override
     public void loadResources(Iterable<Path> roots) {
+        baseModel = null;
+        runPoses = List.of();
+        animationFallback = null;
         if (Boolean.getBoolean("bluemap.arscreo.disabled")) {
             runtime.inactive("operator-disabled");
             return;
@@ -67,35 +79,69 @@ final class ProfileResourceExtension implements ResourcePackExtension {
             return;
         }
         try {
-            model = InstalledGeoCompiler.compile(readGeo(artifact));
+            byte[] geometry = readEntry(
+                    artifact, GEO_PATH, MAX_GEO_BYTES, "wheel GEO"
+            );
+            baseModel = InstalledGeoCompiler.compile(geometry);
+            try {
+                RunAnimation run = InstalledRunAnimationCompiler.compile(readEntry(
+                        artifact, ANIMATION_PATH, MAX_ANIMATION_BYTES, "wheel animation"
+                ));
+                runPoses = run.poses().stream()
+                        .map(pose -> InstalledGeoCompiler.compile(geometry, pose))
+                        .toList();
+            } catch (IOException | RuntimeException exception) {
+                runPoses = List.of();
+                animationFallback = "animation-compile-"
+                        + exception.getClass().getSimpleName();
+            }
         } catch (IOException | RuntimeException exception) {
-            model = null;
+            baseModel = null;
+            runPoses = List.of();
             runtime.inactive("geo-compile-" + exception.getClass().getSimpleName());
         }
     }
 
     @Override
     public Set<Key> collectUsedTextureKeys() {
-        return Set.of(WheelMeshEmitter.TEXTURE);
+        Set<Key> keys = new LinkedHashSet<>(AnimatedMaskTextures.keys());
+        keys.add(WheelMeshEmitter.TEXTURE);
+        return Set.copyOf(keys);
     }
 
     @Override
     public void bake() {
-        if (model == null) {
+        if (baseModel == null) {
             return;
         }
-        if (resourcePack.getTextures().get(WheelMeshEmitter.TEXTURE) == null) {
+        Texture texture = resourcePack.getTextures().get(WheelMeshEmitter.TEXTURE);
+        if (texture == null) {
             runtime.inactive("installed-wheel-texture-missing");
             return;
         }
         try {
+            List<Key> runTextures = List.of();
+            if (runPoses.size() == InstalledRunAnimationCompiler.POSE_COUNT) {
+                try {
+                    runTextures = AnimatedMaskTextures.install(resourcePack, texture);
+                } catch (IOException | RuntimeException exception) {
+                    runPoses = List.of();
+                    animationFallback = "animation-texture-"
+                            + exception.getClass().getSimpleName();
+                }
+            }
             VariantRendererCatalog variants = VariantRendererCatalog.wrap(
                     resourcePack, renderer
             );
-            RendererDataRegistry.install(resourcePack, model, variants);
+            RendererDataRegistry.install(
+                    resourcePack, baseModel, runPoses, runTextures, variants
+            );
             runtime.activate();
+            String mode = runPoses.isEmpty()
+                    ? "static base-pose fallback (" + fallbackReason() + ")"
+                    : "four-pose, 11-tick installed run loop";
             System.out.println("BlueMap Ars Creo add-on active: compiled the installed "
-                    + "Starbuncle Wheel base pose and wrapped " + variants.size()
+                    + "Starbuncle Wheel " + mode + " and wrapped " + variants.size()
                     + " blockstate variant(s).");
         } catch (RuntimeException exception) {
             runtime.inactive("route-install-" + exception.getClass().getSimpleName());
@@ -113,17 +159,26 @@ final class ProfileResourceExtension implements ResourcePackExtension {
         return List.copyOf(result);
     }
 
-    private static byte[] readGeo(Path artifact) throws IOException {
+    private String fallbackReason() {
+        return animationFallback == null ? "animation-unavailable" : animationFallback;
+    }
+
+    private static byte[] readEntry(
+            Path artifact,
+            String path,
+            int maxBytes,
+            String label
+    ) throws IOException {
         try (ZipFile zip = new ZipFile(artifact.toFile())) {
-            ZipEntry entry = zip.getEntry(GEO_PATH);
+            ZipEntry entry = zip.getEntry(path);
             if (entry == null || entry.isDirectory()
-                    || entry.getSize() < 2 || entry.getSize() > MAX_GEO_BYTES) {
-                throw new IOException("installed wheel GEO is missing or outside budget");
+                    || entry.getSize() < 2 || entry.getSize() > maxBytes) {
+                throw new IOException("installed " + label + " is missing or outside budget");
             }
             try (InputStream input = zip.getInputStream(entry)) {
-                byte[] raw = input.readNBytes(MAX_GEO_BYTES + 1);
-                if (raw.length > MAX_GEO_BYTES) {
-                    throw new IOException("installed wheel GEO exceeds byte budget");
+                byte[] raw = input.readNBytes(maxBytes + 1);
+                if (raw.length > maxBytes) {
+                    throw new IOException("installed " + label + " exceeds byte budget");
                 }
                 return raw;
             }

@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: MIT
  *
- * Independently authored static interpreter for the operator-installed
+ * Independently authored geometry interpreter for the operator-installed
  * Bedrock GEO resource. No Ars Creo resource is packaged with this add-on.
  */
 
@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Compiles the exact installed wheel geometry into an unanimated base pose. */
+/** Compiles the exact installed wheel geometry into a base or sampled run pose. */
 public final class InstalledGeoCompiler {
 
     public static final int EXPECTED_BONES = 20;
@@ -37,6 +37,10 @@ public final class InstalledGeoCompiler {
     }
 
     public static WheelModel compile(byte[] raw) {
+        return compile(raw, WheelPose.BASE);
+    }
+
+    public static WheelModel compile(byte[] raw, WheelPose pose) {
         if (raw.length < 2 || raw.length > MAX_BYTES) {
             throw new IllegalArgumentException("installed GEO is outside the byte budget");
         }
@@ -58,6 +62,9 @@ public final class InstalledGeoCompiler {
         if (bones.size() != EXPECTED_BONES) {
             throw new IllegalArgumentException("installed GEO bone roster changed");
         }
+        if (!bones.keySet().containsAll(pose.bones().keySet())) {
+            throw new IllegalArgumentException("installed run references an unknown GEO bone");
+        }
 
         int cubes = bones.values().stream().mapToInt(bone -> bone.cubes.size()).sum();
         if (cubes != EXPECTED_CUBES) {
@@ -67,7 +74,7 @@ public final class InstalledGeoCompiler {
         for (RawBone bone : bones.values()) {
             List<RawBone> chain = boneChain(bone, bones);
             for (RawCube cube : bone.cubes) {
-                emitCube(cube, chain, textureWidth, textureHeight, quads);
+                emitCube(cube, chain, textureWidth, textureHeight, pose, quads);
             }
         }
         if (quads.size() != EXPECTED_QUADS) {
@@ -154,6 +161,7 @@ public final class InstalledGeoCompiler {
             List<RawBone> chain,
             int textureWidth,
             int textureHeight,
+            WheelPose pose,
             List<Quad> output
     ) {
         VertexSet vertices = new VertexSet(cube.origin, cube.size.scale(1D / 16D));
@@ -177,7 +185,11 @@ public final class InstalledGeoCompiler {
             for (int index = 0; index < transformed.length; index++) {
                 Vec3 point = faceVertices[index].rotateAbout(cube.pivot, cube.rotation);
                 for (RawBone transform : chain) {
-                    point = point.rotateAbout(transform.pivot, transform.rotation);
+                    WheelPose.BoneTransform animation = pose.transform(transform.name);
+                    point = point.rotateAbout(
+                            transform.pivot,
+                            transform.rotation.add(animation.rotation())
+                    ).add(animation.translation());
                 }
                 transformed[index] = new Vertex(
                         point, coordinates[index][0], coordinates[index][1]

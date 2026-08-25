@@ -17,7 +17,7 @@ import io.github.janguenter.bluemap.arscreo.activation.AddonRuntime;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-/** Replaces the wheel's empty entity-animated placeholder with a static GEO. */
+/** Replaces the empty placeholder with the bounded run flipbook or static GEO. */
 final class ArsCreoRenderer implements BlockRenderer {
 
     private static final String WHEEL = "ars_creo:starbuncle_wheel";
@@ -79,7 +79,7 @@ final class ArsCreoRenderer implements BlockRenderer {
             return false;
         }
         String facing = block.getBlockState().getProperties().get("facing");
-        return facing != null && emitter.emit(data.model(), facing, block, target, mapColor);
+        return facing != null && emitter.emit(data, facing, block, target, mapColor);
     }
 
     private void stock(
