@@ -4,6 +4,7 @@
 
 package io.github.janguenter.bluemap.arscreo.adapter.bluemap522;
 
+import de.bluecolored.bluemap.core.map.hires.block.BlockRendererType;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePack;
 import de.bluecolored.bluemap.core.util.Key;
 import io.github.janguenter.bluemap.arscreo.activation.AddonRuntime;
@@ -13,9 +14,11 @@ final class ProfileResourceExtensionType
         implements ResourcePack.Extension<ProfileResourceExtension> {
 
     private static final Key KEY = Key.parse("bluemap_ars_creo:exact_profile");
+    private final BlockRendererType renderer;
     private final AddonRuntime runtime;
 
-    ProfileResourceExtensionType(AddonRuntime runtime) {
+    ProfileResourceExtensionType(BlockRendererType renderer, AddonRuntime runtime) {
+        this.renderer = renderer;
         this.runtime = runtime;
     }
 
@@ -26,6 +29,6 @@ final class ProfileResourceExtensionType
 
     @Override
     public ProfileResourceExtension create(ResourcePack pack) {
-        return new ProfileResourceExtension(pack, runtime);
+        return new ProfileResourceExtension(pack, renderer, runtime);
     }
 }

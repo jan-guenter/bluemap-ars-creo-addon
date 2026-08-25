@@ -1,8 +1,9 @@
-# Placeholder gallery
+# Ars Creo comparison gallery
 
-This generated gallery proves only the deterministic data-pack mechanics and a
-single `minecraft:stone` stock control at `(176, 100, 175)`. It does not claim
-Ars Creo support.
+This gallery places `ars_creo:starbuncle_wheel` in all six `facing` states and
+one `minecraft:stone` control. The add-on uses the wheel's installed geometry
+and texture in a fixed base pose. Live Create speed, the gold-block RPM bonus,
+and GeckoLib animation phase are intentionally excluded.
 
 Replace `cases.py` with the smallest real defect fixture and stock controls,
 then keep the stable commands:
@@ -11,9 +12,8 @@ then keep the stable commands:
 python gallery/generate.py
 python gallery/generate.py --check
 python gallery/lint.py
-bash gallery/package.sh /tmp/ars_creo-gallery.zip
+bash gallery/package.sh /tmp/ars-creo-gallery.zip
 ```
 
-The release gate rejects the `SCAFFOLD_NOT_IMPLEMENTED` marker in `cases.py`.
-Keep gallery generation deterministic, bounded, synthetic where practical, and
-free of candidate assets or captured meshes.
+Keep gallery generation deterministic, bounded, and free of candidate assets
+or captured meshes.

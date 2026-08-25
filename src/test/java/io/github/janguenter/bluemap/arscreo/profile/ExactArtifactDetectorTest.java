@@ -5,6 +5,7 @@
 package io.github.janguenter.bluemap.arscreo.profile;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -32,6 +33,9 @@ class ExactArtifactDetectorTest {
         ArtifactPin pin = pin(jar, "targetmod");
 
         assertTrue(ExactArtifactDetector.matchesAll(List.of(jar), List.of(pin)));
+        assertEquals(jar.toRealPath(), ExactArtifactDetector.findExact(
+                List.of(jar), pin
+        ).orElseThrow());
     }
 
     @Test

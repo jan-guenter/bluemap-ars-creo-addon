@@ -8,3 +8,8 @@
 The packaged `META-INF/LICENSE-BlueMap` preserves the license notice for the
 API patterns used by this project. Candidate license identities and evidence
 tiers are recorded per artifact in immutable packaged provenance.
+
+The renderer interprets only the geometry and texture present in the exact
+operator-installed Ars Creo JAR. It packages neither resource. The exact JAR
+and distribution license declarations conflict, so this project does not adapt
+Ars Creo source.

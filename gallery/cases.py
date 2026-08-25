@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Family-owned placeholder cases for the generated gallery."""
+"""Seven-cell Starbuncle Wheel facing comparison gallery."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 
 NAMESPACE = "ars_creo_gallery"
-ENVELOPE = (174, 99, 173, 178, 103, 177)
+ENVELOPE = (173, 99, 173, 191, 103, 183)
 
 
 @dataclass(frozen=True)
@@ -22,15 +22,67 @@ class Placement:
     expected: str
 
 
-# SCAFFOLD_NOT_IMPLEMENTED: replace this stock-only row with the smallest
-# observed Ars Creo defect fixture plus one or two stock controls.
 PLACEMENTS = (
+    Placement(
+        "wheel-north",
+        "Starbuncle Wheel facing north",
+        176,
+        100,
+        176,
+        "ars_creo:starbuncle_wheel[facing=north]",
+        "installed-base-pose-visible",
+    ),
+    Placement(
+        "wheel-south",
+        "Starbuncle Wheel facing south",
+        180,
+        100,
+        176,
+        "ars_creo:starbuncle_wheel[facing=south]",
+        "installed-base-pose-visible",
+    ),
+    Placement(
+        "wheel-west",
+        "Starbuncle Wheel facing west",
+        184,
+        100,
+        176,
+        "ars_creo:starbuncle_wheel[facing=west]",
+        "installed-base-pose-visible",
+    ),
+    Placement(
+        "wheel-east",
+        "Starbuncle Wheel facing east",
+        188,
+        100,
+        176,
+        "ars_creo:starbuncle_wheel[facing=east]",
+        "installed-base-pose-visible",
+    ),
+    Placement(
+        "wheel-up",
+        "Starbuncle Wheel facing up",
+        176,
+        100,
+        180,
+        "ars_creo:starbuncle_wheel[facing=up]",
+        "installed-base-pose-visible",
+    ),
+    Placement(
+        "wheel-down",
+        "Starbuncle Wheel facing down",
+        180,
+        100,
+        180,
+        "ars_creo:starbuncle_wheel[facing=down]",
+        "installed-base-pose-visible",
+    ),
     Placement(
         "stock-control",
         "stone stock rendering control",
-        176,
+        184,
         100,
-        175,
+        180,
         "minecraft:stone",
         "stock-visible",
     ),

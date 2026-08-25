@@ -10,15 +10,16 @@ import java.util.List;
 public final class ArsCreo540Profile {
 
     public static final String PROFILE_ID = "ars-creo-5.4.0-mc1.21.1";
-    public static final List<ArtifactPin> ARTIFACTS = List.of(
-            new ArtifactPin(
+    public static final ArtifactPin ARS_CREO = new ArtifactPin(
                     "arsCreo",
                     "ars_creo",
                     "5.4.0",
                     "ars_creo-1.21.1-5.4.0.jar",
                     95_973L,
                     "50f0fe5c5f855151c1482c1772ea94c2eaadc2b0c85c963bb9aeb421fc801e4f"
-            ),
+    );
+    public static final List<ArtifactPin> ARTIFACTS = List.of(
+            ARS_CREO,
             new ArtifactPin(
                     "arsNouveau",
                     "ars_nouveau",
