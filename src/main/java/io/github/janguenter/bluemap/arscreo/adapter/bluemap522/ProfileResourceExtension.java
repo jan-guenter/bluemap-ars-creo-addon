@@ -139,7 +139,7 @@ final class ProfileResourceExtension implements ResourcePackExtension {
             runtime.activate();
             String mode = runPoses.isEmpty()
                     ? "static base-pose fallback (" + fallbackReason() + ")"
-                    : "four-pose, 11-tick installed run loop";
+                    : "four-pose, 11-tick installed run loop with synthetic wheel rotation";
             System.out.println("BlueMap Ars Creo add-on active: compiled the installed "
                     + "Starbuncle Wheel " + mode + " and wrapped " + variants.size()
                     + " blockstate variant(s).");

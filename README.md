@@ -6,9 +6,11 @@ A Java 21 BlueMap add-on for the exact `ars-creo-5.4.0-mc1.21.1` profile in All 
 Status: prototype ready for disposable visual staging. The exact profile reads
 the operator-installed Starbuncle Wheel geometry, `run` animation, and texture.
 It samples the continuous 0.56-second body animation into four poses and shows
-them through an 11-tick BlueMap texture loop across all six saved `facing`
-states. Unknown or unsupported inputs keep BlueMap's stock rendering. A failed
-animation parse or mask build keeps the installed static base pose.
+them through an 11-tick BlueMap texture loop. The same clock advances the cage
+through a representative 45-degree rotation, which is seamless because the
+installed wheel has eightfold symmetry. Unknown or unsupported inputs keep
+BlueMap's stock rendering. A failed animation parse or mask build keeps the
+installed static base pose.
 
 ## Build
 
@@ -35,9 +37,9 @@ The initial implementation owns only `ars_creo:starbuncle_wheel`. The
 Starbuncle body uses four runtime-compiled samples of the installed looping
 `run` animation. BlueMap's 50 ms texture timing makes the displayed loop 550 ms
 instead of the source animation's 560 ms. All map instances share that phase.
-The wheel itself stays in its installed base pose because its client rotation
-depends on live Create speed. Gold-block RPM changes, particles, and moving
-contraption behavior remain outside this route.
+The cage uses a synchronized, constant representative rotation because BlueMap
+cannot read its live Create speed. Gold-block RPM changes, live speed and
+direction, particles, and moving contraption behavior remain outside this route.
 
 No Ars Creo binary, source, class, asset, captured mesh, or gallery is
 bundled in the add-on.

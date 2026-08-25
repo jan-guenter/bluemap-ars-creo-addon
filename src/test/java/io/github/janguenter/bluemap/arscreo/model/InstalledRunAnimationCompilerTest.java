@@ -40,6 +40,14 @@ class InstalledRunAnimationCompilerTest {
         assertEquals(InstalledRunAnimationCompiler.SAMPLE_TIMES, run.sampleTimes());
         assertEquals(InstalledRunAnimationCompiler.POSE_COUNT, models.size());
         assertEquals(InstalledRunAnimationCompiler.POSE_COUNT, new HashSet<>(models).size());
+        for (int index = 0; index < run.poses().size(); index++) {
+            assertVector(
+                    run.poses().get(index).transform("wheel").rotation(),
+                    0D,
+                    InstalledRunAnimationCompiler.SYNTHETIC_WHEEL_PHASES.get(index),
+                    0D
+            );
+        }
         assertTrue(models.stream().allMatch(model ->
                 model.quads().size() == InstalledGeoCompiler.EXPECTED_QUADS));
         assertNotEquals(InstalledGeoCompiler.compile(exactEntry(GEO)), models.getFirst());

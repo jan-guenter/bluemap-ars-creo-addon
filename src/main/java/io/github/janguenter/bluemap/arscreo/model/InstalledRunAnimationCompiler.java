@@ -29,6 +29,8 @@ public final class InstalledRunAnimationCompiler {
     public static final int POSE_COUNT = 4;
     public static final int DISPLAY_TICKS = 11;
     public static final List<Double> SAMPLE_TIMES = List.of(0D, 0.14D, 0.28D, 0.42D);
+    public static final List<Double> SYNTHETIC_WHEEL_PHASES =
+            List.of(0D, -11.25D, -22.5D, -33.75D);
     private static final int MAX_BYTES = 64 * 1024;
     private static final int MAX_KEYFRAMES = 32;
     private static final Set<String> EXPECTED_BONES = Set.of(
@@ -80,12 +82,16 @@ public final class InstalledRunAnimationCompiler {
         }
 
         List<WheelPose> poses = new ArrayList<>(POSE_COUNT);
-        for (double time : SAMPLE_TIMES) {
+        for (int index = 0; index < SAMPLE_TIMES.size(); index++) {
+            double time = SAMPLE_TIMES.get(index);
             Map<String, BoneTransform> transforms = new LinkedHashMap<>();
             tracks.forEach((bone, boneTracks) -> transforms.put(bone, new BoneTransform(
                     signedRotation(boneTracks.rotation.sample(time)),
                     signedTranslation(boneTracks.position.sample(time))
             )));
+            transforms.put("wheel", new BoneTransform(
+                    new Vec3(0D, SYNTHETIC_WHEEL_PHASES.get(index), 0D), ZERO_VECTOR
+            ));
             poses.add(new WheelPose(transforms));
         }
         return new RunAnimation(EXPECTED_LENGTH_SECONDS, SAMPLE_TIMES, poses);
