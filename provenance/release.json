@@ -1,10 +1,87 @@
 {
-  "accepted_staging_entries": null,
-  "final_release_artifacts": null,
-  "note": "Populate only after owner visual acceptance; this file is not packaged.",
-  "owner_accepted_staging": null,
-  "repository": "https://github.com/jan-guenter/bluemap-ars-creo-addon",
   "schema_version": 1,
-  "status": "prototype-not-owner-accepted",
-  "version": "0.1.0-SNAPSHOT"
+  "status": "owner-accepted-release-candidate",
+  "version": "0.1.0-alpha.1",
+  "release_date": "2026-08-25",
+  "repository": "https://github.com/jan-guenter/bluemap-ars-creo-addon",
+  "tag": "v0.1.0-alpha.1",
+  "maven_coordinate": "io.github.jan-guenter:bluemap-ars-creo-addon:0.1.0-alpha.1",
+  "owner_accepted_staging": {
+    "accepted_at": "2026-08-25",
+    "commit": "cadd7e6453b89f7073d3c30cc5cd91ceaa2e6dfc",
+    "production_jar_sha256": "c39688e906636af98947e76e7d94714751e1d0f0fb7f4213fabdb7cdf10646e7",
+    "production_jar_size": 163266,
+    "tree": "42737ad4de0bc3f7cca34b0bba95648265199e9f",
+    "visual_acceptance": true
+  },
+  "accepted_staging_entries": {
+    "entry_count": 45,
+    "path": "provenance/accepted-staging-entries.sha256",
+    "sha256": "10e741fdb43b164c1882ebc6d4266b1a985a0e8d9fa441ae802137a0eabd6b65"
+  },
+  "final_release_artifacts": {
+    "production_jar": {
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
+      "size": 163265,
+      "sha256": "bcf9ac905e3d9b7702da666c3be131a6b24ab6b8dfd472b8ffa5d5e014cb1938"
+    },
+    "sources_jar": {
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1-sources.jar",
+      "size": 93866,
+      "sha256": "7eb10fb91b2f6236a33774302aae099f13d0e63c75863fb83f0b449b2c04a731"
+    },
+    "pom": {
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.pom",
+      "size": 1323,
+      "sha256": "bb12a4739aad8a04fff8d08f8bd6e6630c6ac9074cb7e401f2466b8551353e82"
+    },
+    "gradle_module": {
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.module.json",
+      "size": 2826,
+      "sha256": "9c159e78c4a9f0a1f7550ebcd904612c558063e3e844a6296d7ae7ebf25973b2"
+    }
+  },
+  "staged_equivalence": {
+    "entry_manifest": "provenance/accepted-staging-entries.sha256",
+    "identical_non_manifest_entries": 45,
+    "whole_jar_byte_identical": false,
+    "only_changed_entry_bytes": "META-INF/MANIFEST.MF",
+    "change_reason": "Implementation-Version changed from the accepted SNAPSHOT marker to the final release version."
+  },
+  "gallery": {
+    "archive_file_name": "ars_creo-gallery-release.zip",
+    "size": 2054,
+    "sha256": "728cc0dcb72be87b7bda26a5520a4b907a7638e3107bf493f648ab622e922274",
+    "wheel_facings": 6,
+    "stock_controls": 1,
+    "published_as_release_asset": false
+  },
+  "ephemeral_ci_inputs": {
+    "ars_creo": {
+      "curseforge_project": 575698,
+      "curseforge_file": 8139067,
+      "size": 95973,
+      "sha256": "50f0fe5c5f855151c1482c1772ea94c2eaadc2b0c85c963bb9aeb421fc801e4f"
+    },
+    "ars_nouveau": {
+      "curseforge_project": 401955,
+      "curseforge_file": 8517890,
+      "size": 20096005,
+      "sha256": "90796df69bfb39b1a9c79edbfa01c2425e5b86aea47dc55ebdcbf30e88f47592"
+    },
+    "create": {
+      "curseforge_project": 328085,
+      "curseforge_file": 7963363,
+      "size": 19123767,
+      "sha256": "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a"
+    },
+    "policy": "Downloaded only into the ephemeral runner, verified before use, and never bundled or uploaded."
+  },
+  "verification": {
+    "production_jar_exact_byte_gate": true,
+    "sources_jar_exact_byte_gate": true,
+    "publication_metadata_exact_byte_gate": true,
+    "staged_equivalence_gate": true,
+    "exact_input_gate": true
+  }
 }

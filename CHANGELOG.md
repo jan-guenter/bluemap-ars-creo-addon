@@ -1,7 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-alpha.1 - 2026-08-25
 
-- Generated a fail-closed Java 21 BlueMap add-on seed for `ars-creo-5.4.0-mc1.21.1`.
-- SCAFFOLD_NOT_IMPLEMENTED: renderer implementation and visual acceptance
-  remain pending.
+- Added exact-gated installed-resource rendering for the Starbuncle Wheel's
+  four-pose, 11-tick `run` loop across all six facing states.
+- Added a synchronized representative cage rotation for the static BlueMap
+  view.
+- Kept a deterministic static base-pose fallback when animation parsing or
+  runtime texture-mask creation fails.
+- Added a seven-cell comparison gallery and focused geometry, animation,
+  texture-mask, and facing checks.
+- Sealed the exact owner-accepted staging entries for release promotion.

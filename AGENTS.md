@@ -30,8 +30,8 @@ Mixins, or world state.
 - Gallery cases and renderer facts are family-owned; do not move them back to
   the generic scaffold.
 
-`SCAFFOLD_NOT_IMPLEMENTED` is permitted only during the fast prototype phase.
-The release gate rejects it.
+Prototype implementation placeholders are permitted only during the fast
+prototype phase. The release gate rejects them.
 
 ## Commands
 
