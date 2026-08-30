@@ -4,6 +4,7 @@ package io.github.janguenter.bluemap.installedgeo.testing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonParseException;
 
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 /** Shared synthetic contract tests for the installed Bedrock GEO compiler family. */
 public abstract class InstalledGeoParityHarness {
@@ -93,6 +95,10 @@ public abstract class InstalledGeoParityHarness {
     @Test
     protected final void enforcesInputByteBudget() {
         byte[] valid = geometry(null, null, 20);
+        assertTrue(
+                valid.length <= MAX_BYTES,
+                "synthetic installed GEO exceeds compiler byte budget"
+        );
         byte[] atLimit = Arrays.copyOf(valid, MAX_BYTES);
         Arrays.fill(atLimit, valid.length, atLimit.length, (byte) ' ');
         assertEquals(EXPECTED_QUADS, compile(atLimit).quads());
@@ -114,10 +120,10 @@ public abstract class InstalledGeoParityHarness {
         );
     }
 
-    private static void assertRejected(String message, Runnable compilation) {
+    private static void assertRejected(String message, Executable compilation) {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                compilation::run
+                compilation
         );
         assertEquals(message, exception.getMessage());
     }
