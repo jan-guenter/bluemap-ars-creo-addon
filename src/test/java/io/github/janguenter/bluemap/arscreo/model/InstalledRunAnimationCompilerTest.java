@@ -8,8 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler.RunAnimation;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vec3;
-import io.github.janguenter.bluemap.arscreo.model.WheelPose.BoneTransform;
+import io.github.janguenter.bluemap.arscreo.profile.ArsCreo540Profile;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoCompiler;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Vec3;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoPose;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoPose.BoneTransform;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -31,8 +35,10 @@ class InstalledRunAnimationCompilerTest {
     @Test
     void samplesTheExactContinuousRunLoopIntoFourDistinctModels() throws IOException {
         RunAnimation run = InstalledRunAnimationCompiler.compile(exactEntry(ANIMATION));
-        List<WheelModel> models = run.poses().stream()
-                .map(pose -> InstalledGeoCompiler.compile(exactEntryUnchecked(GEO), pose))
+        List<InstalledGeoModel> models = run.poses().stream()
+                .map(pose -> InstalledGeoCompiler.compile(
+                        exactEntryUnchecked(GEO), ArsCreo540Profile.STARBUNCLE_WHEEL, pose
+                ))
                 .toList();
 
         assertEquals(InstalledRunAnimationCompiler.EXPECTED_LENGTH_SECONDS,
@@ -49,14 +55,16 @@ class InstalledRunAnimationCompilerTest {
             );
         }
         assertTrue(models.stream().allMatch(model ->
-                model.quads().size() == InstalledGeoCompiler.EXPECTED_QUADS));
-        assertNotEquals(InstalledGeoCompiler.compile(exactEntry(GEO)), models.getFirst());
+                model.quads().size() == ArsCreo540Profile.STARBUNCLE_WHEEL.quads()));
+        assertNotEquals(InstalledGeoCompiler.compile(
+                exactEntry(GEO), ArsCreo540Profile.STARBUNCLE_WHEEL
+        ), models.getFirst());
     }
 
     @Test
     void appliesInstalledSignsUnitsAndTargetKeyframeEasing() throws IOException {
         RunAnimation run = InstalledRunAnimationCompiler.compile(exactEntry(ANIMATION));
-        WheelPose second = run.poses().get(1);
+        InstalledGeoPose second = run.poses().get(1);
         BoneTransform starbuncle = second.transform("starbuncle");
         BoneTransform head = second.transform("head");
 

@@ -7,7 +7,7 @@ package io.github.janguenter.bluemap.arscreo.adapter.bluemap522;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vec3;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Vec3;
 import org.junit.jupiter.api.Test;
 
 class WheelMeshEmitterTest {

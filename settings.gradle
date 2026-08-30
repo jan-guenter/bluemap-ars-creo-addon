@@ -3,8 +3,13 @@
 pluginManagement {
     def toolkitPath = 'tooling/bluemap-addon-toolkit'
     def expectedToolkitCommit = '6cd34a8368cc4ee8628fbe830a90ec5b14960629'
+    def installedGeoPath = 'modules/bluemap-installed-geo-resource-models'
+    def expectedInstalledGeoCommit = 'c80a83eb6e2cb0bb05a69ace9716ef08b9db14f2'
+    def expectedInstalledGeoSourceTree = '8db87f933557d54c5ede2db70d94f67eaf44c30b'
     def consumerRoot = settings.settingsDir
     def toolkit = new File(consumerRoot, toolkitPath)
+    def installedGeo = new File(consumerRoot, installedGeoPath)
+    def installedGeoSource = new File(installedGeo, 'src/main/java')
 
     if (!(expectedToolkitCommit ==~ /[0-9a-f]{40}/)
             || !new File(consumerRoot, '.git').exists()
@@ -15,8 +20,18 @@ pluginManagement {
                         + "Run: git submodule update --init --recursive -- ${toolkitPath}"
         )
     }
+    if (!(expectedInstalledGeoCommit ==~ /[0-9a-f]{40}/)
+            || !(expectedInstalledGeoSourceTree ==~ /[0-9a-f]{40}/)
+            || !installedGeo.isDirectory()
+            || !new File(installedGeo, '.git').exists()
+            || !installedGeoSource.isDirectory()) {
+        throw new GradleException(
+                'Installed-GEO trust preflight is not configured or initialized. '
+                        + "Run: git submodule update --init --recursive -- ${installedGeoPath}"
+        )
+    }
 
-    def toolkitGitOutput = {
+    def trustedGitOutput = {
         File repository, List<String> arguments, String operation ->
         def execution = settings.providers.exec {
             commandLine(['git', '-C', repository.absolutePath] + arguments)
@@ -35,14 +50,14 @@ pluginManagement {
         output
     }
 
-    if (!toolkitGitOutput(consumerRoot, ['rev-parse', '--show-prefix'],
+    if (!trustedGitOutput(consumerRoot, ['rev-parse', '--show-prefix'],
             'verify the consumer root').isEmpty()) {
         throw new GradleException('settings.gradle must be at the Git worktree root')
     }
 
-    def tree = toolkitGitOutput(consumerRoot, ['ls-tree', 'HEAD', '--', toolkitPath],
+    def tree = trustedGitOutput(consumerRoot, ['ls-tree', 'HEAD', '--', toolkitPath],
             'read the committed toolkit gitlink').tokenize(' \t')
-    def index = toolkitGitOutput(consumerRoot, ['ls-files', '--stage', '--', toolkitPath],
+    def index = trustedGitOutput(consumerRoot, ['ls-files', '--stage', '--', toolkitPath],
             'read the indexed toolkit gitlink').tokenize(' \t')
     if (tree.size() != 4 || tree[0] != '160000' || tree[1] != 'commit'
             || tree[2] != expectedToolkitCommit || tree[3] != toolkitPath
@@ -52,13 +67,46 @@ pluginManagement {
         throw new GradleException('Committed/indexed toolkit gitlink does not match its pin')
     }
 
-    def toolkitHead = toolkitGitOutput(toolkit,
+    def toolkitHead = trustedGitOutput(toolkit,
             ['rev-parse', '--verify', 'HEAD^{commit}'], 'read toolkit HEAD')
-    def toolkitStatus = toolkitGitOutput(toolkit,
+    def toolkitStatus = trustedGitOutput(toolkit,
             ['status', '--porcelain=v1', '--untracked-files=all',
              '--ignore-submodules=none'], 'verify the toolkit worktree')
     if (toolkitHead != expectedToolkitCommit || !toolkitStatus.isEmpty()) {
         throw new GradleException('Toolkit HEAD differs from the gitlink or is dirty')
+    }
+
+    def installedGeoTree = trustedGitOutput(consumerRoot,
+            ['ls-tree', 'HEAD', '--', installedGeoPath],
+            'read the committed Installed-GEO gitlink').tokenize(' \t')
+    def installedGeoIndex = trustedGitOutput(consumerRoot,
+            ['ls-files', '--stage', '--', installedGeoPath],
+            'read the indexed Installed-GEO gitlink').tokenize(' \t')
+    if (installedGeoTree.size() != 4 || installedGeoTree[0] != '160000'
+            || installedGeoTree[1] != 'commit'
+            || installedGeoTree[2] != expectedInstalledGeoCommit
+            || installedGeoTree[3] != installedGeoPath
+            || installedGeoIndex.size() != 4 || installedGeoIndex[0] != '160000'
+            || installedGeoIndex[1] != expectedInstalledGeoCommit
+            || installedGeoIndex[2] != '0' || installedGeoIndex[3] != installedGeoPath) {
+        throw new GradleException(
+                'Committed/indexed Installed-GEO gitlink does not match its pin'
+        )
+    }
+
+    def installedGeoHead = trustedGitOutput(installedGeo,
+            ['rev-parse', '--verify', 'HEAD^{commit}'], 'read Installed-GEO HEAD')
+    def installedGeoSourceTree = trustedGitOutput(installedGeo,
+            ['rev-parse', 'HEAD:src/main/java'], 'read Installed-GEO source tree')
+    def installedGeoStatus = trustedGitOutput(installedGeo,
+            ['status', '--porcelain=v1', '--untracked-files=all',
+             '--ignore-submodules=none'], 'verify the Installed-GEO worktree')
+    if (installedGeoHead != expectedInstalledGeoCommit
+            || installedGeoSourceTree != expectedInstalledGeoSourceTree
+            || !installedGeoStatus.isEmpty()) {
+        throw new GradleException(
+                'Installed-GEO HEAD/source tree differs from the pin or is dirty'
+        )
     }
 
     def gradleBuild = new File(toolkit, 'gradle')

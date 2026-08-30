@@ -11,8 +11,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vec3;
-import io.github.janguenter.bluemap.arscreo.model.WheelPose.BoneTransform;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Vec3;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoPose;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoPose.BoneTransform;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public final class InstalledRunAnimationCompiler {
             tracks.put(entry.getKey(), new BoneTracks(rotation, position));
         }
 
-        List<WheelPose> poses = new ArrayList<>(POSE_COUNT);
+        List<InstalledGeoPose> poses = new ArrayList<>(POSE_COUNT);
         for (int index = 0; index < SAMPLE_TIMES.size(); index++) {
             double time = SAMPLE_TIMES.get(index);
             Map<String, BoneTransform> transforms = new LinkedHashMap<>();
@@ -92,7 +93,7 @@ public final class InstalledRunAnimationCompiler {
             transforms.put("wheel", new BoneTransform(
                     new Vec3(0D, SYNTHETIC_WHEEL_PHASES.get(index), 0D), ZERO_VECTOR
             ));
-            poses.add(new WheelPose(transforms));
+            poses.add(new InstalledGeoPose(transforms));
         }
         return new RunAnimation(EXPECTED_LENGTH_SECONDS, SAMPLE_TIMES, poses);
     }
@@ -207,7 +208,7 @@ public final class InstalledRunAnimationCompiler {
     public record RunAnimation(
             double lengthSeconds,
             List<Double> sampleTimes,
-            List<WheelPose> poses
+            List<InstalledGeoPose> poses
     ) {
 
         public RunAnimation {

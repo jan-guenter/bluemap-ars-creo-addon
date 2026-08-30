@@ -12,10 +12,10 @@ import de.bluecolored.bluemap.core.util.Direction;
 import de.bluecolored.bluemap.core.util.Key;
 import de.bluecolored.bluemap.core.util.math.Color;
 import de.bluecolored.bluemap.core.world.block.BlockNeighborhood;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Quad;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vec3;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel.Vertex;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Quad;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Vec3;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel.Vertex;
 
 import java.util.List;
 import java.util.Set;
@@ -54,7 +54,7 @@ final class WheelMeshEmitter {
         if (texture == null || !FACINGS.contains(facing)) {
             return false;
         }
-        List<WheelModel> models = List.of(data.baseModel());
+        List<InstalledGeoModel> models = List.of(data.baseModel());
         List<Key> materialKeys = List.of(TEXTURE);
         if (data.animated() && data.runTextures().stream()
                 .allMatch(key -> resourcePack.getTextures().get(key) != null)) {

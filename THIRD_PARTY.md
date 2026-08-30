@@ -13,3 +13,7 @@ The renderer interprets only the geometry, `run` animation, and texture present
 in the exact operator-installed Ars Creo JAR. It packages none of those
 resources. The exact JAR and distribution license declarations conflict, so
 this project does not adapt Ars Creo source.
+
+The Installed-GEO compiler, model, and pose sources compiled into this add-on
+are first-party MIT-licensed source, not third-party material. They are pinned
+as a source submodule; its standalone module JAR is not redistributed.
