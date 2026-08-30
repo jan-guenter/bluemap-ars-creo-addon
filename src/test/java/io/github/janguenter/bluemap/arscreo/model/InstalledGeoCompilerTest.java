@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.janguenter.bluemap.arscreo.profile.ArsCreo540Profile;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoCompiler;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -25,10 +28,14 @@ class InstalledGeoCompilerTest {
     @Test
     void compilesTheExactInstalledBasePoseDeterministically() throws IOException {
         byte[] raw = exactGeometry();
-        WheelModel first = InstalledGeoCompiler.compile(raw);
-        WheelModel second = InstalledGeoCompiler.compile(raw);
+        InstalledGeoModel first = InstalledGeoCompiler.compile(
+                raw, ArsCreo540Profile.STARBUNCLE_WHEEL
+        );
+        InstalledGeoModel second = InstalledGeoCompiler.compile(
+                raw, ArsCreo540Profile.STARBUNCLE_WHEEL
+        );
 
-        assertEquals(InstalledGeoCompiler.EXPECTED_QUADS, first.quads().size());
+        assertEquals(ArsCreo540Profile.STARBUNCLE_WHEEL.quads(), first.quads().size());
         assertEquals(first, second);
         assertTrue(first.quads().stream().flatMap(quad -> java.util.stream.Stream.of(
                 quad.first(), quad.second(), quad.third(), quad.fourth()
@@ -42,7 +49,9 @@ class InstalledGeoCompilerTest {
         byte[] changed = geometry.replace("\"1.12.0\"", "\"9.99.0\"")
                 .getBytes(StandardCharsets.UTF_8);
 
-        assertThrows(IllegalArgumentException.class, () -> InstalledGeoCompiler.compile(changed));
+        assertThrows(IllegalArgumentException.class, () -> InstalledGeoCompiler.compile(
+                changed, ArsCreo540Profile.STARBUNCLE_WHEEL
+        ));
     }
 
     private static byte[] exactGeometry() throws IOException {
@@ -55,7 +64,7 @@ class InstalledGeoCompilerTest {
         }
     }
 
-    private static boolean finite(WheelModel.Vec3 value) {
+    private static boolean finite(InstalledGeoModel.Vec3 value) {
         return Double.isFinite(value.x())
                 && Double.isFinite(value.y())
                 && Double.isFinite(value.z());

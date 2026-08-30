@@ -4,6 +4,8 @@
 
 package io.github.janguenter.bluemap.arscreo.profile;
 
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoCompiler.Contract;
+
 import java.util.List;
 
 /** Exact All the Mons 1.2.0 profile `ars-creo-5.4.0-mc1.21.1`. */
@@ -18,6 +20,7 @@ public final class ArsCreo540Profile {
                     95_973L,
                     "50f0fe5c5f855151c1482c1772ea94c2eaadc2b0c85c963bb9aeb421fc801e4f"
     );
+    public static final Contract STARBUNCLE_WHEEL = new Contract(20, 36, 192);
     public static final List<ArtifactPin> ARTIFACTS = List.of(
             ARS_CREO,
             new ArtifactPin(

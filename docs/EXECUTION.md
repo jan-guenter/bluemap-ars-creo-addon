@@ -4,11 +4,12 @@ This repository starts inactive and stock-safe. Implement only the smallest
 observed Ars Creo rendering defect before staging.
 
 Before running Gradle gates, activate a Python 3.11 or newer virtual
-environment, initialize the pinned toolkit submodule, and install the exact
+environment, initialize both pinned submodules, and install the exact
 development-only toolkit into the environment:
 
 ```bash
-git submodule update --init --recursive -- tooling/bluemap-addon-toolkit
+git submodule update --init --recursive -- \
+  tooling/bluemap-addon-toolkit modules/bluemap-installed-geo-resource-models
 python -m pip install --disable-pip-version-check --no-deps \
   --require-hashes --only-binary=:all: \
   --requirement requirements/toolkit.txt
@@ -16,6 +17,9 @@ python -m pip install --disable-pip-version-check --no-deps \
 
 The requirement locks the 20,585-byte `v0.3.0-alpha.1` wheel at SHA-256
 `82f1ec53603646849a7c2d4b58f3fb7000413fe83043a302bee88cc88daeb8f7`.
+The Gradle settings preflight separately locks the Installed-GEO module commit
+and its `src/main/java` tree, requires a clean checkout, and compiles its three
+Java sources directly with Gson 2.8.9 as an explicit compile-only dependency.
 
 ## Prototype
 

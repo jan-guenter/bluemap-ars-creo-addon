@@ -3,10 +3,12 @@
 A Java 21 BlueMap add-on for the exact `ars-creo-5.4.0-mc1.21.1` profile in All the Mons
 `1.2.0` / Minecraft `1.21.1`.
 
-Status: prototype ready for disposable visual staging. The exact profile reads
-the operator-installed Starbuncle Wheel geometry, `run` animation, and texture.
-It samples the continuous 0.56-second body animation into four poses and shows
-them through an 11-tick BlueMap texture loop. The same clock advances the cage
+Version `0.1.0-alpha.2` keeps the owner-accepted Starbuncle Wheel animation
+while replacing its private installed-GEO compiler, model, and pose records
+with the pinned shared source module. The exact profile reads the
+operator-installed wheel geometry, `run` animation, and texture. It samples
+the continuous 0.56-second body animation into four poses and shows them
+through an 11-tick BlueMap texture loop. The same clock advances the cage
 through a representative 45-degree rotation, which is seamless because the
 installed wheel has eightfold symmetry. Unknown or unsupported inputs keep
 BlueMap's stock rendering. A failed animation parse or mask build keeps the
@@ -15,10 +17,13 @@ installed static base pose.
 ## Build
 
 Clone with `--recurse-submodules`, or initialize an existing checkout with
-`git submodule update --init --recursive -- tooling/bluemap-addon-toolkit`.
-The settings preflight accepts only the committed toolkit gitlink at commit
-`6cd34a8368cc4ee8628fbe830a90ec5b14960629` and rejects an uninitialized,
-changed, or dirty toolkit checkout.
+`git submodule update --init --recursive -- tooling/bluemap-addon-toolkit
+modules/bluemap-installed-geo-resource-models`. The settings preflight accepts
+only the committed toolkit gitlink at
+`6cd34a8368cc4ee8628fbe830a90ec5b14960629` and the Installed-GEO source
+module at `c80a83eb6e2cb0bb05a69ace9716ef08b9db14f2`, with Java source tree
+`8db87f933557d54c5ede2db70d94f67eaf44c30b`. It rejects an uninitialized,
+changed, or dirty checkout.
 
 ```bash
 gradle --no-daemon -PbluemapSourcePath=../bluemap-backport clean check build
@@ -28,6 +33,12 @@ gradle --no-daemon -PbluemapSourcePath=../bluemap-backport clean check build
 requires every exact candidate JAR property and validates the comparison
 gallery. See `provenance/upstreams.json` for immutable artifact identities and
 the [execution guide](docs/EXECUTION.md) for the prototype-to-release loop.
+
+The build compiles the module's three Java source files directly and declares
+Gson 2.8.9 as an explicit compile-only dependency. The module JAR is neither a
+runtime dependency nor nested in the add-on. Creo's wheel contract, `run`
+animation parser and sampler, resource admission, routes, mesh emission, and
+fallback policy stay local to this repository.
 
 ## Install
 

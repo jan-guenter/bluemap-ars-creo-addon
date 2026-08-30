@@ -14,6 +14,10 @@ base {
     archivesName = artifact_id
 }
 
+sourceSets {
+    main.java.srcDir 'modules/bluemap-installed-geo-resource-models/src/main/java'
+}
+
 repositories {
     mavenCentral()
     maven {
@@ -24,6 +28,7 @@ repositories {
 
 dependencies {
     compileOnly "de.bluecolored:bluemap-core:${bluemap_version}"
+    compileOnly 'com.google.code.gson:gson:2.8.9'
     compileOnly 'org.jetbrains:annotations:23.0.0'
     testImplementation "de.bluecolored:bluemap-core:${bluemap_version}"
     testImplementation 'org.jetbrains:annotations:23.0.0'
@@ -101,6 +106,33 @@ tasks.named('sourcesJar', Jar).configure {
 
 def productionJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
 def publishedSourcesJar = tasks.named('sourcesJar', Jar).flatMap { it.archiveFile }
+def sharedInstalledGeoPackage =
+        'io/github/janguenter/bluemap/resource/installedgeo/model/'
+def sharedInstalledGeoClasses = [
+        'InstalledGeoCompiler.class',
+        'InstalledGeoCompiler$Axis.class',
+        'InstalledGeoCompiler$Contract.class',
+        'InstalledGeoCompiler$Face.class',
+        'InstalledGeoCompiler$RawBone.class',
+        'InstalledGeoCompiler$RawCube.class',
+        'InstalledGeoCompiler$UvRect.class',
+        'InstalledGeoCompiler$VertexSet.class',
+        'InstalledGeoModel.class',
+        'InstalledGeoModel$Quad.class',
+        'InstalledGeoModel$Vec3.class',
+        'InstalledGeoModel$Vertex.class',
+        'InstalledGeoPose.class',
+        'InstalledGeoPose$BoneTransform.class'
+].collect { sharedInstalledGeoPackage + it }
+def sharedInstalledGeoSources = [
+        'InstalledGeoCompiler.java',
+        'InstalledGeoModel.java',
+        'InstalledGeoPose.java'
+].collect { sharedInstalledGeoPackage + it }
+def legacyInstalledGeoCompiler =
+        'io/github/janguenter/bluemap/arscreo/model/InstalledGeoCompiler'
+def legacyWheelModel = 'io/github/janguenter/bluemap/arscreo/model/WheelModel'
+def legacyWheelPose = 'io/github/janguenter/bluemap/arscreo/model/WheelPose'
 
 tasks.register('verifyGeneratedGallery', Exec) {
     commandLine 'python3', 'gallery/generate.py', '--check'
@@ -150,9 +182,16 @@ tasks.register('verifyProductionJar') {
                     'META-INF/THIRD_PARTY-bluemap-ars-creo-addon.md',
                     'META-INF/bluemap-ars-creo/upstreams.json'
             ]
+            required.addAll(sharedInstalledGeoClasses)
             def missing = required.findAll { !entries.contains(it) }
-            if (!missing.isEmpty()) {
-                throw new GradleException("Production JAR is missing: ${missing}")
+            def nonUniqueShared = sharedInstalledGeoClasses.findAll { shared ->
+                entries.count { it == shared } != 1
+            }
+            if (!missing.isEmpty() || !nonUniqueShared.isEmpty()) {
+                throw new GradleException(
+                        "Production JAR shared boundary mismatch: missing=${missing}, "
+                                + "nonUnique=${nonUniqueShared}"
+                )
             }
             def descriptor = new groovy.json.JsonSlurper().parseText(
                     zip.getInputStream(zip.getEntry('bluemap.addon.json')).getText('UTF-8')
@@ -174,8 +213,14 @@ tasks.register('verifyProductionJar') {
                         || entry.startsWith('net/neoforged/')
                         || entry.startsWith('gallery/')
                         || entry.endsWith('/bootstrap.json')
+                        || entry.startsWith(legacyInstalledGeoCompiler)
+                        || entry.startsWith(legacyWheelModel)
+                        || entry.startsWith(legacyWheelPose)
+                        || (entry.startsWith(sharedInstalledGeoPackage)
+                            && !sharedInstalledGeoClasses.contains(entry))
                         || (entry.endsWith('.class')
-                            && !entry.startsWith('io/github/janguenter/bluemap/arscreo/'))
+                            && !entry.startsWith('io/github/janguenter/bluemap/arscreo/')
+                            && !sharedInstalledGeoClasses.contains(entry))
                         || candidateIds.any { entry.startsWith("assets/${it}/") }
             }
             if (!forbidden.isEmpty()) {
@@ -203,10 +248,15 @@ tasks.register('verifySourcesJar') {
                     'META-INF/LICENSE-BlueMap',
                     'META-INF/bluemap-ars-creo/upstreams.json'
             ]
+            required.addAll(sharedInstalledGeoSources)
             def missing = required.findAll { !entries.contains(it) }
+            def nonUniqueShared = sharedInstalledGeoSources.findAll { shared ->
+                entries.count { it == shared } != 1
+            }
             def projectJava = entries.findAll { it.endsWith('.java') }
             def foreignJava = projectJava.findAll {
                 !it.startsWith('io/github/janguenter/bluemap/arscreo/')
+                        && !sharedInstalledGeoSources.contains(it)
             }
             def candidateIds = new groovy.json.JsonSlurper()
                     .parse(file('provenance/upstreams.json')).artifacts*.mod_id
@@ -220,14 +270,21 @@ tasks.register('verifySourcesJar') {
                         || entry.startsWith('net/neoforged/')
                         || entry.startsWith('gallery/')
                         || entry.endsWith('/bootstrap.json')
+                        || entry == "${legacyInstalledGeoCompiler}.java"
+                        || entry == "${legacyWheelModel}.java"
+                        || entry == "${legacyWheelPose}.java"
+                        || (entry.startsWith(sharedInstalledGeoPackage)
+                            && !sharedInstalledGeoSources.contains(entry))
                         || candidateIds.any { entry.startsWith("assets/${it}/") }
             }
             if (!missing.isEmpty()
+                    || !nonUniqueShared.isEmpty()
                     || projectJava.isEmpty()
                     || !foreignJava.isEmpty()
                     || !forbidden.isEmpty()) {
                 throw new GradleException(
                         "Sources JAR boundary mismatch: missing=${missing}, "
+                                + "nonUnique=${nonUniqueShared}, "
                                 + "foreignJava=${foreignJava}, forbidden=${forbidden}"
                 )
             }

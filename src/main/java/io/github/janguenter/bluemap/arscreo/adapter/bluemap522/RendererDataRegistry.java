@@ -5,7 +5,7 @@ package io.github.janguenter.bluemap.arscreo.adapter.bluemap522;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePack;
 import de.bluecolored.bluemap.core.util.Key;
 import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel;
 
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -21,8 +21,8 @@ final class RendererDataRegistry {
 
     static synchronized void install(
             ResourcePack pack,
-            WheelModel baseModel,
-            List<WheelModel> runPoses,
+            InstalledGeoModel baseModel,
+            List<InstalledGeoModel> runPoses,
             List<Key> runTextures,
             VariantRendererCatalog variants
     ) {
@@ -34,8 +34,8 @@ final class RendererDataRegistry {
     }
 
     record Data(
-            WheelModel baseModel,
-            List<WheelModel> runPoses,
+            InstalledGeoModel baseModel,
+            List<InstalledGeoModel> runPoses,
             List<Key> runTextures,
             VariantRendererCatalog variants
     ) {

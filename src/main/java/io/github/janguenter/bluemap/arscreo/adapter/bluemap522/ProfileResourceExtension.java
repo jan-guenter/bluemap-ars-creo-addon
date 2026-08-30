@@ -10,12 +10,12 @@ import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePackExten
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.texture.Texture;
 import de.bluecolored.bluemap.core.util.Key;
 import io.github.janguenter.bluemap.arscreo.activation.AddonRuntime;
-import io.github.janguenter.bluemap.arscreo.model.InstalledGeoCompiler;
 import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler;
 import io.github.janguenter.bluemap.arscreo.model.InstalledRunAnimationCompiler.RunAnimation;
-import io.github.janguenter.bluemap.arscreo.model.WheelModel;
-import io.github.janguenter.bluemap.arscreo.profile.ExactArtifactDetector;
 import io.github.janguenter.bluemap.arscreo.profile.ArsCreo540Profile;
+import io.github.janguenter.bluemap.arscreo.profile.ExactArtifactDetector;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoCompiler;
+import io.github.janguenter.bluemap.resource.installedgeo.model.InstalledGeoModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,8 +40,8 @@ final class ProfileResourceExtension implements ResourcePackExtension {
     private final ResourcePack resourcePack;
     private final BlockRendererType renderer;
     private final AddonRuntime runtime;
-    private WheelModel baseModel;
-    private List<WheelModel> runPoses = List.of();
+    private InstalledGeoModel baseModel;
+    private List<InstalledGeoModel> runPoses = List.of();
     private String animationFallback;
 
     ProfileResourceExtension(
@@ -82,13 +82,17 @@ final class ProfileResourceExtension implements ResourcePackExtension {
             byte[] geometry = readEntry(
                     artifact, GEO_PATH, MAX_GEO_BYTES, "wheel GEO"
             );
-            baseModel = InstalledGeoCompiler.compile(geometry);
+            baseModel = InstalledGeoCompiler.compile(
+                    geometry, ArsCreo540Profile.STARBUNCLE_WHEEL
+            );
             try {
                 RunAnimation run = InstalledRunAnimationCompiler.compile(readEntry(
                         artifact, ANIMATION_PATH, MAX_ANIMATION_BYTES, "wheel animation"
                 ));
                 runPoses = run.poses().stream()
-                        .map(pose -> InstalledGeoCompiler.compile(geometry, pose))
+                        .map(pose -> InstalledGeoCompiler.compile(
+                                geometry, ArsCreo540Profile.STARBUNCLE_WHEEL, pose
+                        ))
                         .toList();
             } catch (IOException | RuntimeException exception) {
                 runPoses = List.of();

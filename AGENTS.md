@@ -12,6 +12,9 @@ changing it.
 - Java `21`
 - BlueMap `5.22-agent.backport-5.22-mc1.21.1-2`, commit `9be321df995a1103808621d529eb72773e719d4d`
 - BlueMap API commit `285c9a60eff3ac2b0cab308ce1058d1565be0971`
+- Installed-GEO source module `v0.1.0-alpha.1`, commit
+  `c80a83eb6e2cb0bb05a69ace9716ef08b9db14f2`, Java source tree
+  `8db87f933557d54c5ede2db70d94f67eaf44c30b`
 - Exact profile `ars-creo-5.4.0-mc1.21.1`
 
 This is a standalone BlueMap add-on, not a NeoForge mod. Do not add client
@@ -24,6 +27,10 @@ Mixins, or world state.
   unsupported, malformed, disabled, or not yet implemented.
 - Keep the BlueMap internal API behind `adapter/bluemap522`.
 - Keep exact candidate identities and resource contracts in the profile.
+- Compile the three pinned Installed-GEO module sources directly. Keep the
+  exact wheel contract, animation parsing and sampling, admission, routes,
+  emission, diagnostics, and fallback policy in this repository. Never bundle
+  the standalone module JAR.
 - Keep state/NBT decoding, normalized data, and mesh emission separate.
 - Unknown family data gets one bounded diagnostic and stock fallback.
 - Use installed resources only after exact-artifact admission.
@@ -38,6 +45,8 @@ prototype phase. The release gate rejects them.
 Compile and test the safe seed:
 
 ```bash
+git submodule update --init --recursive -- \
+  tooling/bluemap-addon-toolkit modules/bluemap-installed-geo-resource-models
 gradle --no-daemon -PbluemapSourcePath=../bluemap-backport clean check build
 ```
 

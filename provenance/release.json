@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "status": "owner-accepted-release-candidate",
-  "version": "0.1.0-alpha.1",
-  "release_date": "2026-08-25",
+  "version": "0.1.0-alpha.2",
+  "release_date": "2026-08-30",
   "repository": "https://github.com/jan-guenter/bluemap-ars-creo-addon",
-  "tag": "v0.1.0-alpha.1",
-  "maven_coordinate": "io.github.jan-guenter:bluemap-ars-creo-addon:0.1.0-alpha.1",
+  "tag": "v0.1.0-alpha.2",
+  "maven_coordinate": "io.github.jan-guenter:bluemap-ars-creo-addon:0.1.0-alpha.2",
   "owner_accepted_staging": {
     "accepted_at": "2026-08-25",
     "commit": "cadd7e6453b89f7073d3c30cc5cd91ceaa2e6dfc",
@@ -15,38 +15,96 @@
     "visual_acceptance": true
   },
   "accepted_staging_entries": {
-    "entry_count": 45,
+    "entry_count": 46,
     "path": "provenance/accepted-staging-entries.sha256",
-    "sha256": "10e741fdb43b164c1882ebc6d4266b1a985a0e8d9fa441ae802137a0eabd6b65"
+    "sha256": "30610e1ebe9a5931a37a41ac14b2f7c3d436a2286aff8d2803bda725d819faf5"
   },
   "final_release_artifacts": {
     "production_jar": {
-      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.jar",
-      "size": 163265,
-      "sha256": "bcf9ac905e3d9b7702da666c3be131a6b24ab6b8dfd472b8ffa5d5e014cb1938"
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.2.jar",
+      "size": 173649,
+      "sha256": "b18fe7ba443e16c942a0a063b969f7acbf67c4451d08a974107b0e6c110b769c"
     },
     "sources_jar": {
-      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1-sources.jar",
-      "size": 93866,
-      "sha256": "7eb10fb91b2f6236a33774302aae099f13d0e63c75863fb83f0b449b2c04a731"
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.2-sources.jar",
+      "size": 96149,
+      "sha256": "e5eca13199133dabee79cb7758192987520ddde75b051fe23250e4d332bce8c4"
     },
     "pom": {
-      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.pom",
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.2.pom",
       "size": 1323,
-      "sha256": "bb12a4739aad8a04fff8d08f8bd6e6630c6ac9074cb7e401f2466b8551353e82"
+      "sha256": "be35a6b36a3cae2b0d435d3665c67e0e7ff7a2bd70689e69757731785fb96d49"
     },
     "gradle_module": {
-      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.1.module.json",
+      "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.2.module.json",
       "size": 2826,
-      "sha256": "9c159e78c4a9f0a1f7550ebcd904612c558063e3e844a6296d7ae7ebf25973b2"
+      "sha256": "4ebfa63992d6ae5890f5e04120feadbf27b205d07852d3656e6ad31537bfbab2"
+    },
+    "sha256sums": {
+      "file_name": "SHA256SUMS",
+      "size": 444,
+      "sha256": "67bcf4fef77e62a6b80f863f67e7bfc100f8ace8bd9c345c0f0db071f91b3197"
     }
   },
   "staged_equivalence": {
     "entry_manifest": "provenance/accepted-staging-entries.sha256",
-    "identical_non_manifest_entries": 45,
-    "whole_jar_byte_identical": false,
-    "only_changed_entry_bytes": "META-INF/MANIFEST.MF",
-    "change_reason": "Implementation-Version changed from the accepted SNAPSHOT marker to the final release version."
+    "identical_non_manifest_entries": 46,
+    "whole_jar_byte_identical": true,
+    "only_changed_entry_bytes": "none",
+    "change_reason": "The sealed alpha.2 candidate is the reviewed source-module migration build. Its legacy visual acceptance is carried forward by full raw-bit geometry and animation parity, unchanged gallery sources, unchanged resource admission, and unchanged renderer behavior."
+  },
+  "installed_geo_module_migration": {
+    "baseline_version": "0.1.0-alpha.1",
+    "baseline_release_commit": "f27921f918928a813d8bf9d0aa607184de41d9e2",
+    "baseline_production_jar_size": 163265,
+    "baseline_production_jar_sha256": "bcf9ac905e3d9b7702da666c3be131a6b24ab6b8dfd472b8ffa5d5e014cb1938",
+    "repository": "https://github.com/jan-guenter/bluemap-installed-geo-resource-models",
+    "version": "0.1.0-alpha.1",
+    "tag": "v0.1.0-alpha.1",
+    "commit": "c80a83eb6e2cb0bb05a69ace9716ef08b9db14f2",
+    "source_tree": "8db87f933557d54c5ede2db70d94f67eaf44c30b",
+    "production_archive": {
+      "old_entries": 45,
+      "new_entries": 46,
+      "common_entries": 32,
+      "unchanged_entries": 20,
+      "changed_common_entries": 12,
+      "removed_local_compiler_model_pose_classes": 13,
+      "added_shared_compiler_model_pose_classes": 14
+    },
+    "sources_archive": {
+      "old_entries": 26,
+      "new_entries": 26,
+      "common_entries": 23,
+      "unchanged_entries": 16,
+      "changed_common_entries": 7,
+      "removed_local_compiler_model_pose_sources": 3,
+      "added_shared_compiler_model_pose_sources": 3
+    },
+    "parity": {
+      "complete_ordered_mesh_bits_equal": true,
+      "exact_animation_timing_equal": true,
+      "exact_animation_bone_transforms_equal": true,
+      "animation_timing_and_bone_transforms_sha256": "198eca6e0071b28d8542519233c5a59ecb3d67e1b4d4adca441cbb16607f279f",
+      "static_model_quads_compared": 192,
+      "static_model_mesh_sha256": "45f358474455f320cb11ea56ac234f3854c5737554e7e32a2061757167ce7a06",
+      "posed_models_compared": 4,
+      "posed_model_quads_each": 192,
+      "posed_model_mesh_sha256": [
+        "85d8a4d4d89d3b0c81cc4e1557f5e8f26f53986ee5c49d2fb99f7e278f707902",
+        "247f036f311f804a95df8fad894d2db1e38d8ba3a4c12b3032bee803456bd9d1",
+        "dafd9c1e2dc698ac01ef3fee35e558075df4ac7f49766a299c08100c42997e7b",
+        "3bac3918f8d7f024ef0c3fe4b72065d155c1bf92ee0c40592c76b3bb1b11c2bc"
+      ],
+      "aggregate_quads_compared": 960,
+      "aggregate_mesh_sha256": "570ed34f1c02ee23c26d3b5f709bbebdfb5f4c17d759c29cd7887c063a740daf",
+      "consumer_parity_fixtures_passed": 7,
+      "consumer_tests_passed": 21
+    },
+    "gallery_sources_unchanged": true,
+    "resource_admission_unchanged": true,
+    "wheel_animation_parser_and_sampler_local": true,
+    "renderer_behavior_change": false
   },
   "gallery": {
     "archive_file_name": "ars_creo-gallery-release.zip",
