@@ -3,16 +3,16 @@
 A Java 21 BlueMap add-on for the exact `ars-creo-5.4.0-mc1.21.1` profile in All the Mons
 `1.2.0` / Minecraft `1.21.1`.
 
-Status: published `0.1.0-alpha.1`, from its owner-accepted release candidate.
-The unreleased source-ownership migration described below is not a new release
-candidate. The exact profile reads the operator-installed Starbuncle Wheel
-geometry, `run` animation, and texture. It samples the continuous 0.56-second
-body animation into four poses and shows them through an 11-tick BlueMap
-texture loop. The same clock advances the cage through a representative
-45-degree rotation, which is seamless because the installed wheel has
-eightfold symmetry. Unknown or unsupported inputs keep BlueMap's stock
-rendering. A failed animation parse or mask build keeps the installed static
-base pose.
+Version `0.1.0-alpha.2` keeps the owner-accepted Starbuncle Wheel animation
+while replacing its private installed-GEO compiler, model, and pose records
+with the pinned shared source module. The exact profile reads the
+operator-installed wheel geometry, `run` animation, and texture. It samples
+the continuous 0.56-second body animation into four poses and shows them
+through an 11-tick BlueMap texture loop. The same clock advances the cage
+through a representative 45-degree rotation, which is seamless because the
+installed wheel has eightfold symmetry. Unknown or unsupported inputs keep
+BlueMap's stock rendering. A failed animation parse or mask build keeps the
+installed static base pose.
 
 ## Build
 
