@@ -1,13 +1,25 @@
 {
   "schema_version": 1,
-  "status": "unpublished-migration-candidate",
+  "status": "owner-accepted-release-candidate",
   "version": "0.1.0-alpha.3",
   "release_date": "2026-08-31",
   "repository": "https://github.com/jan-guenter/bluemap-ars-creo-addon",
   "tag": "v0.1.0-alpha.3",
   "maven_coordinate": "io.github.jan-guenter:bluemap-ars-creo-addon:0.1.0-alpha.3",
-  "published": false,
-  "candidate_artifacts": {
+  "owner_accepted_staging": {
+    "accepted_at": "2026-08-31",
+    "commit": "7d97e289ceeb584842b35e6e20ebfeafbd907cba",
+    "production_jar_sha256": "b4855259c2c449c4c3fe972f3a8fddf3fcf13714305524e600604908ec75ad59",
+    "production_jar_size": 178803,
+    "tree": "018cb8f1ff975b6157544e8c5c8f5bdf98a06650",
+    "visual_acceptance": true
+  },
+  "accepted_staging_entries": {
+    "entry_count": 47,
+    "path": "provenance/accepted-staging-entries.sha256",
+    "sha256": "81ba28ca425a8e0bf975f8af6fe9894d80c03f082e6892b9dc727918e5563ac0"
+  },
+  "final_release_artifacts": {
     "production_jar": {
       "file_name": "bluemap-ars-creo-addon-0.1.0-alpha.3.jar",
       "size": 178803,
@@ -28,6 +40,13 @@
       "size": 2827,
       "sha256": "d7f9abfe33eb165e86dd0502ba2c0c7329d6fa00f9ea21cc883bc7d42a503d1e"
     }
+  },
+  "staged_equivalence": {
+    "entry_manifest": "provenance/accepted-staging-entries.sha256",
+    "identical_non_manifest_entries": 47,
+    "whole_jar_byte_identical": true,
+    "only_changed_entry_bytes": "none",
+    "change_reason": "The production artifacts reproduce the owner-accepted BlueMap 5.23 integration candidate."
   },
   "inherited_visual_acceptance": {
     "baseline_version": "0.1.0-alpha.2",

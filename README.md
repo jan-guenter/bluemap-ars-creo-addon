@@ -4,8 +4,8 @@ A Java 21 BlueMap 5.23 feature-backport add-on for the exact
 `ars-creo-5.4.0-mc1.21.1` profile in All the Mons `1.2.0` / Minecraft
 `1.21.1`.
 
-Version `0.1.0-alpha.3` is an unpublished runtime migration candidate. It
-keeps the owner-accepted Starbuncle Wheel behavior from `0.1.0-alpha.2` and
+Version `0.1.0-alpha.3` keeps the owner-accepted Starbuncle Wheel behavior
+from `0.1.0-alpha.2` and
 targets only BlueMap feature-backport commit
 `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac` with API commit
 `285c9a60eff3ac2b0cab308ce1058d1565be0971`. The exact profile reads the
