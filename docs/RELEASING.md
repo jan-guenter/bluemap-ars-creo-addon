@@ -13,7 +13,7 @@ After the owner accepts the candidate:
    `bluemap-addon-toolkit jar-entries write` command.
 3. Change `addon_version` from the SNAPSHOT to its final version through a PR.
 4. Build production JAR, sources JAR, POM, and Gradle module metadata with the
-   exact promotion Java/Gradle/BlueMap inputs and both committed, clean
+   exact promotion Java/Gradle/BlueMap inputs and all three committed, clean
    submodule pins.
 5. Put their exact sizes and SHA-256 values in `gradle.properties` and complete
    `provenance/release.json`.

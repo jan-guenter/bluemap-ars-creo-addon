@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-alpha.3 - 2026-08-31
+
+- Target only BlueMap feature-backport commit
+  `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac` and API commit
+  `285c9a60eff3ac2b0cab308ce1058d1565be0971`.
+- Move the local adapter boundary from `bluemap522` to `bluemap523`.
+- Compile the four shared bootstrap helpers from Adapter API
+  `0.1.0-alpha.2` and remove the three duplicate local helpers.
+- Keep the accepted four-pose animal loop, synchronized cage rotation,
+  six-facing gallery, installed-resource use, and stock fallback unchanged.
+
 ## 0.1.0-alpha.2 - 2026-08-30
 
 - Replaced the private installed-GEO compiler, wheel model, and pose records
