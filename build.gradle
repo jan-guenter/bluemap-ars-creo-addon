@@ -15,6 +15,7 @@ base {
 }
 
 sourceSets {
+    main.java.srcDir 'modules/bluemap-addon-adapter-api/src/main/java'
     main.java.srcDir 'modules/bluemap-installed-geo-resource-models/src/main/java'
 }
 
@@ -106,6 +107,20 @@ tasks.named('sourcesJar', Jar).configure {
 
 def productionJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
 def publishedSourcesJar = tasks.named('sourcesJar', Jar).flatMap { it.archiveFile }
+def sharedAdapterApiPackage =
+        'io/github/janguenter/bluemap/addon/adapter/api/bluemap523/'
+def sharedAdapterApiClasses = [
+        'BlueMapRuntimeCompatibility.class',
+        'RegistryGuard.class',
+        'ResourceExtensionType.class',
+        'SyntheticDispatch.class'
+].collect { sharedAdapterApiPackage + it }
+def sharedAdapterApiSources = [
+        'BlueMapRuntimeCompatibility.java',
+        'RegistryGuard.java',
+        'ResourceExtensionType.java',
+        'SyntheticDispatch.java'
+].collect { sharedAdapterApiPackage + it }
 def sharedInstalledGeoPackage =
         'io/github/janguenter/bluemap/resource/installedgeo/model/'
 def sharedInstalledGeoClasses = [
@@ -133,6 +148,13 @@ def legacyInstalledGeoCompiler =
         'io/github/janguenter/bluemap/arscreo/model/InstalledGeoCompiler'
 def legacyWheelModel = 'io/github/janguenter/bluemap/arscreo/model/WheelModel'
 def legacyWheelPose = 'io/github/janguenter/bluemap/arscreo/model/WheelPose'
+def legacyLocalAdapterPackage =
+        'io/github/janguenter/bluemap/arscreo/adapter/bluemap522/'
+def displacedAdapterHelpers = [
+        'io/github/janguenter/bluemap/arscreo/adapter/bluemap523/AdapterCompatibility',
+        'io/github/janguenter/bluemap/arscreo/adapter/bluemap523/ProfileResourceExtensionType',
+        'io/github/janguenter/bluemap/arscreo/adapter/bluemap523/RegistryGuard'
+]
 
 tasks.register('verifyGeneratedGallery', Exec) {
     commandLine 'python3', 'gallery/generate.py', '--check'
@@ -182,9 +204,11 @@ tasks.register('verifyProductionJar') {
                     'META-INF/THIRD_PARTY-bluemap-ars-creo-addon.md',
                     'META-INF/bluemap-ars-creo/upstreams.json'
             ]
+            required.addAll(sharedAdapterApiClasses)
             required.addAll(sharedInstalledGeoClasses)
             def missing = required.findAll { !entries.contains(it) }
-            def nonUniqueShared = sharedInstalledGeoClasses.findAll { shared ->
+            def nonUniqueShared = (sharedAdapterApiClasses + sharedInstalledGeoClasses)
+                    .findAll { shared ->
                 entries.count { it == shared } != 1
             }
             if (!missing.isEmpty() || !nonUniqueShared.isEmpty()) {
@@ -213,13 +237,18 @@ tasks.register('verifyProductionJar') {
                         || entry.startsWith('net/neoforged/')
                         || entry.startsWith('gallery/')
                         || entry.endsWith('/bootstrap.json')
+                        || entry.startsWith(legacyLocalAdapterPackage)
+                        || displacedAdapterHelpers.any { helper -> entry.startsWith(helper) }
                         || entry.startsWith(legacyInstalledGeoCompiler)
                         || entry.startsWith(legacyWheelModel)
                         || entry.startsWith(legacyWheelPose)
+                        || (entry.startsWith(sharedAdapterApiPackage)
+                            && !sharedAdapterApiClasses.contains(entry))
                         || (entry.startsWith(sharedInstalledGeoPackage)
                             && !sharedInstalledGeoClasses.contains(entry))
                         || (entry.endsWith('.class')
                             && !entry.startsWith('io/github/janguenter/bluemap/arscreo/')
+                            && !sharedAdapterApiClasses.contains(entry)
                             && !sharedInstalledGeoClasses.contains(entry))
                         || candidateIds.any { entry.startsWith("assets/${it}/") }
             }
@@ -248,14 +277,17 @@ tasks.register('verifySourcesJar') {
                     'META-INF/LICENSE-BlueMap',
                     'META-INF/bluemap-ars-creo/upstreams.json'
             ]
+            required.addAll(sharedAdapterApiSources)
             required.addAll(sharedInstalledGeoSources)
             def missing = required.findAll { !entries.contains(it) }
-            def nonUniqueShared = sharedInstalledGeoSources.findAll { shared ->
+            def nonUniqueShared = (sharedAdapterApiSources + sharedInstalledGeoSources)
+                    .findAll { shared ->
                 entries.count { it == shared } != 1
             }
             def projectJava = entries.findAll { it.endsWith('.java') }
             def foreignJava = projectJava.findAll {
                 !it.startsWith('io/github/janguenter/bluemap/arscreo/')
+                        && !sharedAdapterApiSources.contains(it)
                         && !sharedInstalledGeoSources.contains(it)
             }
             def candidateIds = new groovy.json.JsonSlurper()
@@ -270,9 +302,15 @@ tasks.register('verifySourcesJar') {
                         || entry.startsWith('net/neoforged/')
                         || entry.startsWith('gallery/')
                         || entry.endsWith('/bootstrap.json')
+                        || entry.startsWith(legacyLocalAdapterPackage)
+                        || displacedAdapterHelpers.any { helper ->
+                            entry == "${helper}.java"
+                        }
                         || entry == "${legacyInstalledGeoCompiler}.java"
                         || entry == "${legacyWheelModel}.java"
                         || entry == "${legacyWheelPose}.java"
+                        || (entry.startsWith(sharedAdapterApiPackage)
+                            && !sharedAdapterApiSources.contains(entry))
                         || (entry.startsWith(sharedInstalledGeoPackage)
                             && !sharedInstalledGeoSources.contains(entry))
                         || candidateIds.any { entry.startsWith("assets/${it}/") }
